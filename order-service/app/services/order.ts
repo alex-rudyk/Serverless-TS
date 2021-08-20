@@ -13,8 +13,29 @@ export const getAllOrders = async () => {
         .scan(params)
         .promise()
         .then(result => { 
-            const orders = result.Items as Order[];
-            return orders;
+            if (result.Items)
+                return result.Items as Order[];
+
+            return [];
+        })
+}
+
+export const getOrderWithUUID = async (uuid: string) => {
+    const params: DynamoDB.DocumentClient.GetItemInput = {
+        TableName: ORDERS_TABLE,
+        Key: {
+            uuid
+        }
+    }
+
+    return dynamoDbClient
+        .get(params)
+        .promise()
+        .then(result => {
+            if (result.Item)
+                return result.Item as Order;
+
+            return undefined;
         })
 }
 
