@@ -1,9 +1,8 @@
 import { Router } from 'express';
+import { createNew } from '../controllers/orders';
 
 const router = Router();
 
-router.use('/', (req, res) => {
-    res.status(503).json({ message: 'Order service is not implemented yet!' })
-});
+router.post('/', createNew);
 
 export default router;

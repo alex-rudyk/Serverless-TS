@@ -1,11 +1,36 @@
 service: order-service
 
+custom:
+  tableName: 'orders-table-${self:provider.stage}'
+  dynamodb:
+    start:
+      migrate: true
+    stages:
+      - dev
+
+
 provider:
   name: aws
   runtime: nodejs14.x
   stage: dev
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - sqs:SendMessage
+          Resource:
+            - Fn::GetAtt: [ OrdersTable, Arn ]
+            - Fn::GetAtt: [ OrderQueue, Arn ]
   environment:
     NODE_ENV: dev
+    ORDERS_TABLE: ${self:custom.tableName}
 
 plugins:
   - serverless-plugin-typescript 
@@ -18,3 +43,23 @@ functions:
       - http:
           path: /
           method: ANY
+
+resources:
+  Resources:
+    OrderQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: OrderQueue
+    OrdersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: uuid
+            AttributeType: S
+        KeySchema:
+          - AttributeName: uuid
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.tableName}
