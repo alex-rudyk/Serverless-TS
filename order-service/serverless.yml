@@ -1,0 +1,20 @@
+service: order-service
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: dev
+  environment:
+    NODE_ENV: dev
+
+plugins:
+  - serverless-plugin-typescript 
+  - serverless-offline
+
+functions:
+  orders:
+    handler: app/handler.orders
+    events:
+      - http:
+          path: /
+          method: ANY

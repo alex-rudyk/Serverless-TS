@@ -1,0 +1,20 @@
+service: status-service
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: dev
+  environment:
+    NODE_ENV: dev
+
+plugins:
+  - serverless-plugin-typescript 
+  - serverless-offline
+
+functions:
+  status:
+    handler: app/handler.status
+    events:
+      - http:
+          path: /
+          method: ANY
