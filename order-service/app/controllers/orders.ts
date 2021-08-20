@@ -11,11 +11,11 @@ export const createNew = async (req: Request, res: Response) => {
     }
 
     try {
-        await createNewOrder(orderData);
+        const successful = await createNewOrder(orderData);
 
-        res.status(100).json({
+        res.status(201).json({
             orderId: uuid,
-            successful: true,
+            successful,
             type: 'create'
         });
     } catch (err) {
