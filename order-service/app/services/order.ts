@@ -1,6 +1,7 @@
 import { DynamoDB } from 'aws-sdk';
+import { createSetUpdateParams } from '../helpers/dbHelper';
 import { dynamoDbClient } from "../models";
-import { OrderStatus, Order, OrderCreateAttributes } from "../models/order";
+import { OrderStatus, Order, OrderCreateAttributes, OrderUpdateAttributes } from "../models/order";
 
 const { ORDERS_TABLE } = process.env;
 
@@ -58,6 +59,39 @@ export const createNewOrder = async (order: OrderCreateAttributes) => {
         .put(params)
         .promise()
         .then(result => { 
+            return !!result.$response.data;
+        });
+}
+
+export const updateOrder = async (uuid: string, dataToUpdate: OrderUpdateAttributes) => {
+    const params = {
+        ...createSetUpdateParams(ORDERS_TABLE, { uuid }, dataToUpdate),
+        ReturnValues: 'ALL_NEW'
+    };
+
+    return dynamoDbClient
+        .update(params)
+        .promise()
+        .then(result => {
+            if (result.Attributes)
+                return result.Attributes as Order;
+            
+            return undefined;
+        });
+}
+
+export const deleteOrder = async (uuid: string) => {
+    const params: DynamoDB.DocumentClient.DeleteItemInput = {
+        TableName: ORDERS_TABLE,
+        Key: {
+            uuid
+        }
+    };
+
+    return dynamoDbClient
+        .delete(params)
+        .promise()
+        .then(result => {
             return !!result.$response.data;
         });
 }

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createNewOrder, getAllOrders, getOrderWithUUID } from "../services/order";
+import { createNewOrder, deleteOrder, getAllOrders, getOrderWithUUID, updateOrder } from "../services/order";
 
 export const createNew = async (req: Request, res: Response) => {
     const { uuid, name, amount } = req.body;
@@ -56,5 +56,78 @@ export const getOne = async (req: Request, res: Response) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Could not get order' });
+    }
+}
+
+export const update = async (req: Request, res: Response) => {
+    const { uuid } = req.params;
+    const { name, amount } = req.params;
+
+    try {
+        const order = await getOrderWithUUID(uuid);
+
+        if (!order) {
+            res.status(404).json({
+                orderId: uuid,
+                successful: false,
+                type: 'update',
+                error: `Order with UUID: ${uuid} not found.` 
+            });
+            return;
+        }
+
+        const result = await updateOrder(uuid, {
+            name,
+            amount: parseInt(amount)
+        });
+
+        res.status(200).json({
+            orderId: uuid,
+            successful: !!result,
+            type: 'update'
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            orderId: uuid,
+            successful: false,
+            type: 'update',
+            error: 'Could not update order'
+        });
+    }
+}
+
+export const deleteOne = async (req: Request, res: Response) => {
+    const { uuid } = req.params;
+
+    try {
+        const order = await getOrderWithUUID(uuid);
+
+        if (!order) {
+            res.status(404).json({
+                orderId: uuid,
+                successful: false,
+                type: 'delete',
+                error: `Order with UUID: ${uuid} not found.` 
+            });
+            return;
+        }
+
+        const result = await deleteOrder(uuid);
+
+        res.status(200).json({
+            orderId: uuid,
+            successful: !!result,
+            type: 'delete'
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            orderId: uuid,
+            successful: false,
+            type: 'delete',
+            error: 'Could not delete order'
+        });
     }
 }
