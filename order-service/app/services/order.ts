@@ -2,8 +2,9 @@ import { DynamoDB } from 'aws-sdk';
 import { createSetUpdateParams } from '../helpers/dbHelper';
 import { dynamoDbClient } from "../models";
 import { OrderStatus, Order, OrderCreateAttributes, OrderUpdateAttributes } from "../models/order";
+import { sendMessage } from './sqs';
 
-const { ORDERS_TABLE } = process.env;
+const { ORDERS_TABLE, ORDERS_QUEUE } = process.env;
 
 export const getAllOrders = async () => {
     const params: DynamoDB.DocumentClient.ScanInput = {
@@ -94,4 +95,11 @@ export const deleteOrder = async (uuid: string) => {
         .then(result => {
             return !!result.$response.data;
         });
+}
+
+export const sendOrderUpdateStatus = async (uuid: string, status: OrderStatus) => {
+    return sendMessage(ORDERS_QUEUE, {
+        uuid,
+        status
+    });
 }

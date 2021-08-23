@@ -2,6 +2,7 @@ service: order-service
 
 custom:
   tableName: 'orders-table-${self:provider.stage}'
+  queueName: 'OrderQueue'
   dynamodb:
     start:
       migrate: true
@@ -32,6 +33,7 @@ provider:
   environment:
     NODE_ENV: dev
     ORDERS_TABLE: ${self:custom.tableName}
+    ORDERS_QUEUE: ${self:custom.queueName}
 
 plugins:
   - serverless-plugin-typescript 
@@ -53,7 +55,7 @@ resources:
     OrderQueue:
       Type: AWS::SQS::Queue
       Properties:
-        QueueName: OrderQueue
+        QueueName: ${self:custom.queueName}
     OrdersTable:
       Type: AWS::DynamoDB::Table
       Properties:

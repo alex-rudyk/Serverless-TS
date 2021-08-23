@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
+import { OrderStatus } from "../models/order";
 import { badQuantityFunction } from "../services/failure";
-import { createNewOrder, deleteOrder, getAllOrders, getOrderWithUUID, updateOrder } from "../services/order";
+import { createNewOrder, deleteOrder, getAllOrders, getOrderWithUUID, sendOrderUpdateStatus, updateOrder } from "../services/order";
 
 export const createNew = async (req: Request, res: Response) => {
     const { uuid, name, amount } = req.body;
@@ -18,6 +19,12 @@ export const createNew = async (req: Request, res: Response) => {
             orderId: uuid,
             successful,
             type: 'create'
+        });
+
+        badQuantityFunction(async (success) => {
+            const newStatus = success ? OrderStatus.Success : OrderStatus.Failed;
+
+            await sendOrderUpdateStatus(uuid, newStatus);
         });
     } catch (err) {
         console.error(err);
