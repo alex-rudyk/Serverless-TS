@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { badQuantityFunction } from "../services/failure";
 import { createNewOrder, deleteOrder, getAllOrders, getOrderWithUUID, updateOrder } from "../services/order";
 
 export const createNew = async (req: Request, res: Response) => {
@@ -61,7 +62,7 @@ export const getOne = async (req: Request, res: Response) => {
 
 export const update = async (req: Request, res: Response) => {
     const { uuid } = req.params;
-    const { name, amount } = req.params;
+    const { name, amount } = req.body;
 
     try {
         const order = await getOrderWithUUID(uuid);
@@ -76,14 +77,17 @@ export const update = async (req: Request, res: Response) => {
             return;
         }
 
-        const result = await updateOrder(uuid, {
-            name,
-            amount: parseInt(amount)
+        const isSuccess = badQuantityFunction(async (success) => {
+            if (success)
+                await updateOrder(uuid, {
+                    name,
+                    amount: parseInt(amount)
+                });
         });
 
         res.status(200).json({
             orderId: uuid,
-            successful: !!result,
+            successful: isSuccess,
             type: 'update'
         });
 
@@ -114,11 +118,14 @@ export const deleteOne = async (req: Request, res: Response) => {
             return;
         }
 
-        const result = await deleteOrder(uuid);
+        const isSuccess = badQuantityFunction(async (success) => {
+            if (success)
+                await deleteOrder(uuid);
+        })
 
         res.status(200).json({
             orderId: uuid,
-            successful: !!result,
+            successful: isSuccess,
             type: 'delete'
         });
     } catch (err) {

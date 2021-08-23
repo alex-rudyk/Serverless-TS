@@ -5,10 +5,13 @@ export type CallbackFunction = (success: boolean, delay: number) => void
 export const badQuantityFunction = (callback: CallbackFunction) => {
     const delay = randomIntFromInterval(0, config.maxDelaySec);
     const randomFactor = Math.random();
+    const isSuccess = !(randomFactor <= config.failureFactor);
 
     setTimeout(() => {
-        callback(!(randomFactor <= config.failureFactor), delay);
+        callback(isSuccess, delay);
     }, delay * 1000);
+
+    return isSuccess;
 }
 
 function randomIntFromInterval(min, max) {
