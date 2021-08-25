@@ -1,7 +1,7 @@
 export enum OrderStatus {
     InProgress = 'IN_PROGRESS',
     Success = 'SUCCESS',
-    Failed = 'failed'
+    Failed = 'FAILED'
 };
 
 export interface Order {
