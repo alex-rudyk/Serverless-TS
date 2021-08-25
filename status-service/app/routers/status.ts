@@ -1,9 +1,9 @@
 import { Router } from 'express';
+import { getOrderByUUID, getOrdersByStatus } from '../controllers/status';
 
 const router = Router();
 
-router.use('/', (req, res) => {
-    res.status(503).json({ message: 'Status service is not implemented yet!' })
-});
+router.get('/:status', getOrdersByStatus);
+router.get('/order/:uuid', getOrderByUUID);
 
 export default router;

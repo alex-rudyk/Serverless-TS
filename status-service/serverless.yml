@@ -1,11 +1,39 @@
 service: status-service
 
+custom:
+  tableName: 'orders-table-${self:provider.stage}'
+  queueName: 'OrderQueue'
+  dynamodb:
+    start:
+      migrate: true
+    stages:
+      - dev
+
 provider:
   name: aws
   runtime: nodejs14.x
+  lambdaHashingVersion: '20201221'
   stage: dev
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - sqs:SendMessage
+          Resource:
+            - 'arn:aws:dynamodb:us-east-1:*:table/${self:custom.tableName}'
+            - 'arn:aws:sqs:us-east-1:*:${self:custom.queueName}'
   environment:
     NODE_ENV: dev
+    ORDERS_TABLE: ${self:custom.tableName}
+    ORDERS_QUEUE: ${self:custom.queueName}
+    ACCOUNT_ID: ${aws:accountId}
 
 plugins:
   - serverless-plugin-typescript 
@@ -17,4 +45,7 @@ functions:
     events:
       - http:
           path: /
+          method: ANY
+      - http:
+          path: /{proxy+}
           method: ANY

@@ -1,7 +1,7 @@
 import serverless from 'serverless-http';
 import express from 'express';
 import cors from 'cors';
-import router from './routers/status';
+import router from './routers';
 
 function createExpressApp(router: express.Router) {
 	const app = express();
@@ -16,4 +16,4 @@ function createExpressApp(router: express.Router) {
 
 const statusService = createExpressApp(router);
 
-export const orders = serverless(statusService);
+export const status = serverless(statusService);

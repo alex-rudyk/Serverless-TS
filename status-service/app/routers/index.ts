@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import ordersRouter from './status';
+import statusRouter from './status';
 
 const router = Router();
 
-router.use('/status', ordersRouter);
+router.use('/status', statusRouter);
 
 export default router;
