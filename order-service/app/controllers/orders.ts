@@ -15,16 +15,16 @@ export const createNew = async (req: Request, res: Response) => {
     try {
         const successful = await createNewOrder(orderData);
 
-        res.status(201).json({
-            orderId: uuid,
-            successful,
-            type: 'create'
-        });
-
         badQuantityFunction(async (success) => {
             const newStatus = success ? OrderStatus.Success : OrderStatus.Failed;
 
             await sendOrderUpdateStatus(uuid, newStatus);
+        });
+
+        res.status(201).json({
+            orderId: uuid,
+            successful,
+            type: 'create'
         });
     } catch (err) {
         console.error(err);

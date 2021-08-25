@@ -98,8 +98,8 @@ export const deleteOrder = async (uuid: string) => {
 }
 
 export const sendOrderUpdateStatus = async (uuid: string, status: OrderStatus) => {
-    return sendMessage(ORDERS_QUEUE, {
+    return sendMessage(ORDERS_QUEUE, JSON.stringify({
         uuid,
         status
-    });
+    }));
 }
