@@ -10,7 +10,7 @@ Order service is a service for creating and managing orders. On this service we 
 - Get all orders: [GET] `/orders`
 ---
 ### Order schem:
-```json
+```javascript
 {
     "uuid": "dedc4bfa-e242-43c7-835c-9f32317585bc", // Unique identification for order
     "name": "Order Name", // Order name
@@ -25,7 +25,7 @@ Order service is a service for creating and managing orders. On this service we 
 
 #### Create an order: **[POST]** `/order`   
 Body:
-```json
+```javascript
 {
     "uuid": "dedc4bfa-e242-43c7-835c-9f32317585bc", // Unique identification for order
     "name": "Order Name", // Order name
@@ -33,7 +33,7 @@ Body:
 }
 ```
 Response:
-```json
+```javascript
 {
     "orderId": "dedc4bfa-e242-43c7-835c-9f32317585bc",
     "successful": true,
@@ -43,7 +43,7 @@ Response:
 
 #### Update an order: **[PUT]** `/order/:uuid`
 Body:
-```json
+```javascript
 {
     "name": "Order Name", // (Optional) Order name
     "amount": 12, // (Optional) Amount of the order
@@ -51,7 +51,7 @@ Body:
 }
 ```
 Response:
-```json
+```javascript
 {
     "orderId": "dedc4bfa-e242-43c7-835c-9f32317585bc",
     "successful": true,
@@ -62,7 +62,7 @@ Response:
 ####  Delete an order: **[DELETE]** `/order/:uuid`
 
 Response:
-```json
+```javascript
 {
     "orderId": "dedc4bfa-e242-43c7-835c-9f32317585bc",
     "successful": true,
@@ -72,7 +72,7 @@ Response:
 
 #### Get an order: **[GET]** `/order/:uuid`
 Response:
-```json
+```javascript
 {
     "updatedAt": 1629965671,
     "status": "SUCCESS",
@@ -85,7 +85,7 @@ Response:
 
 #### Get all orders: **[GET]** `/orders`
 Response:
-```json
+```javascript
 [
     {
         "updatedAt": 1629965671,
@@ -114,7 +114,7 @@ Status service is a service for tracking the status of an order. On this service
 - Get orders by status: [GET] `status/:status`
 ---
 ### Order schem:
-```json
+```javascript
 {
     "uuid": "dedc4bfa-e242-43c7-835c-9f32317585bc", // Unique identification for order
     "name": "Order Name", // Order name
@@ -129,7 +129,7 @@ Status service is a service for tracking the status of an order. On this service
 
 #### Get an order: [GET] `status/order/:uuid`
 Response:
-```json
+```javascript
 {
     "updatedAt": 1629965671,
     "status": "SUCCESS",
@@ -145,7 +145,7 @@ Response:
 `status` -  can be: `SUCCESS` | `FAILED` | `IN_PROGRESS`
 
 Response:
-```json
+```javascript
 [
     {
         "updatedAt": 1629965671,

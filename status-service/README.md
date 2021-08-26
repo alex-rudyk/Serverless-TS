@@ -7,7 +7,7 @@ Status service is a service for tracking the status of an order. On this service
 - Get orders by status: [GET] `status/:status`
 ---
 ### Order schem:
-```json
+```javascript
 {
     "uuid": "dedc4bfa-e242-43c7-835c-9f32317585bc", // Unique identification for order
     "name": "Order Name", // Order name
@@ -22,7 +22,7 @@ Status service is a service for tracking the status of an order. On this service
 
 #### Get an order: [GET] `status/order/:uuid`
 Response:
-```json
+```javascript
 {
     "updatedAt": 1629965671,
     "status": "SUCCESS",
@@ -38,7 +38,7 @@ Response:
 `status` -  can be: `SUCCESS` | `FAILED` | `IN_PROGRESS`
 
 Response:
-```json
+```javascript
 [
     {
         "updatedAt": 1629965671,
