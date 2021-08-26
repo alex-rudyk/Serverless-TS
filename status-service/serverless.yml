@@ -3,6 +3,7 @@ service: status-service
 custom:
   tableName: 'orders-table-${self:provider.stage}'
   queueName: 'OrderQueue'
+  topicName: 'StatusTopic'
   dynamodb:
     start:
       migrate: true
@@ -26,13 +27,16 @@ provider:
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
             - sqs:*
+            - sns:Publish
           Resource:
             - 'arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.tableName}'
             - 'arn:aws:sqs:${self:provider.region}:*:${self:custom.queueName}'
+            - 'arn:aws:sns:${self:provider.region}:*:${self:custom.topicName}'
   environment:
     NODE_ENV: dev
     ORDERS_TABLE: ${self:custom.tableName}
     ORDERS_QUEUE: ${self:custom.queueName}
+    TOPIC_NAME: ${self:custom.topicName}
     ACCOUNT_ID: ${aws:accountId}
 
 plugins:
@@ -55,3 +59,16 @@ functions:
       - sqs:
           arn:
             'arn:aws:sqs:${self:provider.region}:${aws:accountId}:${self:custom.queueName}'
+
+resources:
+  Resources:
+    Topic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: '${self:custom.topicName}'
+    SNSSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: alakai.1998.28@gmail.com
+        Protocol: email
+        TopicArn: 'arn:aws:sns:${self:provider.region}:${aws:accountId}:${self:custom.topicName}'

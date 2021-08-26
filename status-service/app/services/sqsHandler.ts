@@ -1,5 +1,8 @@
 import { SQSHandler } from 'aws-lambda';
-import { updateOrder } from './order';
+import { getOrderByUUID, updateOrder } from './order';
+import { sendMessage } from './sns';
+
+const { TOPIC_NAME } = process.env;
 
 export const sqsHandler: SQSHandler = async (event) => {
 	try {
@@ -14,5 +17,12 @@ export const sqsHandler: SQSHandler = async (event) => {
 };
 
 const handleUpdateStatus = async ({ uuid, status }) => {
+	const order = await getOrderByUUID(uuid);
+
+	if (!order)
+		return;
+
+	await sendMessage(TOPIC_NAME, `Order status updated:\n - Order name: ${order.name}\n - Order amount: ${order.amount}\n - New status: ${status}`);
+
 	return updateOrder(uuid, { status });
 }
