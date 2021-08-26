@@ -1,5 +1,6 @@
 import { DynamoDB } from 'aws-sdk';
 import { createSetUpdateParams } from '../helpers/dbHelper';
+import { unixTimestampNow } from '../helpers/unixTimestamp';
 import { dynamoDbClient } from "../models";
 import { OrderStatus, Order, OrderUpdateAttributes } from "../models/order";
 
@@ -48,8 +49,12 @@ export const getOrderByUUID = async (uuid: string) => {
 }
 
 export const updateOrder = async (uuid: string, dataToUpdate: OrderUpdateAttributes) => {
+    const data = {
+        ...dataToUpdate,
+        updatedAt: unixTimestampNow()
+    }
     const params = {
-        ...createSetUpdateParams(ORDERS_TABLE, { uuid }, dataToUpdate),
+        ...createSetUpdateParams(ORDERS_TABLE, { uuid }, data),
         ReturnValues: 'ALL_NEW'
     };
 

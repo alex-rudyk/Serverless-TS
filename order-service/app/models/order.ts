@@ -15,4 +15,4 @@ export interface Order {
 
 export type OrderCreateAttributes = Omit<Order, "createdAt" | "updatedAt" | "status">;
 
-export type OrderUpdateAttributes = Partial<Order>;
+export type OrderUpdateAttributes = Partial<Omit<Order, "createdAt" | "updatedAt">>;

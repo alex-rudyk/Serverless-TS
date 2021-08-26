@@ -69,7 +69,7 @@ export const getOne = async (req: Request, res: Response) => {
 
 export const update = async (req: Request, res: Response) => {
     const { uuid } = req.params;
-    const { name, amount } = req.body;
+    const { name, amount, status } = req.body;
 
     try {
         const order = await getOrderWithUUID(uuid);
@@ -88,7 +88,8 @@ export const update = async (req: Request, res: Response) => {
             if (success)
                 await updateOrder(uuid, {
                     name,
-                    amount: parseInt(amount)
+                    amount: parseInt(amount),
+                    status
                 });
         });
 
